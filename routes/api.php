@@ -22,7 +22,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['namespace' => 'API'], function () {
 
     Route::resource('banks', 'BankController');
-    Route::resource('countries', 'CountryController');
+
+    Route::group(['prefix' => 'countries'], function () {
+        Route::get('/all', 'CountryController@index');
+        Route::get('/', 'CountryController@countries');
+        Route::get('/cities', 'CountryController@cities');
+        Route::get('/areas', 'CountryController@areas');
+        Route::get('/zones', 'CountryController@zones');
+    });
 
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/', 'CategoryController@categories');
@@ -107,4 +114,10 @@ Route::group(['namespace' => 'API'], function () {
     Route::get('/about-us', 'HomeController@aboutUs');
 
     Route::post('/payments', 'PaymentController@index');
+
+    Route::group(['prefix' => 'gateways'], function () {
+        Route::get('/frame', 'VapulusPaymentGatway@show_frame');
+        Route::post('/pay', 'ReviewController@pay');
+    });
+
 });

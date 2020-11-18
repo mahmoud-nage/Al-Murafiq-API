@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\General\Area;
+use App\General\City;
 use App\General\Country;
+use App\General\Zone;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -10,9 +13,7 @@ class CountryController extends Controller
 {
     public function index(Request $request)
     {
-
         //  ********** Still not send banners and sliders ads ********** //
-
         $lang = 'ar';
         if ($request->headers->has('lang')) {
             $lang = $request->header('lang');
@@ -61,6 +62,69 @@ class CountryController extends Controller
                 $cities = [];
             }
             return response()->json(['status' => 200, 'data' => $data], 200);
+        } else {
+            return response()->json(['status' => 400 , 'message' => __('messages.no_data')], 200);
+        }
+    }
+
+    public function countries(Request $request)
+    {
+        //  ********** Still not send banners and sliders ads ********** //
+        $lang = 'ar';
+        if ($request->headers->has('lang')) {
+            $lang = $request->header('lang');
+        }
+
+        $records = Country::where('active', 1)->get();
+        if ($records->count() > 0) {
+            return response()->json(['status' => 200, 'data' => $records], 200);
+        } else {
+            return response()->json(['status' => 400 , 'message' => __('messages.no_data')], 200);
+        }
+    }
+
+    public function cities(Request $request)
+    {
+        //  ********** Still not send banners and sliders ads ********** //
+        $lang = 'ar';
+        if ($request->headers->has('lang')) {
+            $lang = $request->header('lang');
+        }
+
+        $records = City::where('active', 1)->where('country_id', $request->country_id)->get();
+        if ($records->count() > 0) {
+            return response()->json(['status' => 200, 'data' => $records], 200);
+        } else {
+            return response()->json(['status' => 400 , 'message' => __('messages.no_data')], 200);
+        }
+    }
+
+    public function areas(Request $request)
+    {
+        //  ********** Still not send banners and sliders ads ********** //
+        $lang = 'ar';
+        if ($request->headers->has('lang')) {
+            $lang = $request->header('lang');
+        }
+
+        $records = Area::where('active', 1)->where('city_id', $request->city_id)->get();
+        if ($records->count() > 0) {
+            return response()->json(['status' => 200, 'data' => $records], 200);
+        } else {
+            return response()->json(['status' => 400 , 'message' => __('messages.no_data')], 200);
+        }
+    }
+    public function zones(Request $request)
+    {
+        //  ********** Still not send banners and sliders ads ********** //
+        $lang = 'ar';
+        if ($request->headers->has('lang')) {
+            $lang = $request->header('lang');
+        }
+
+        $records = Zone::where('active', 1)->where('area_id', $request->area_id)->get();
+        if ($records->count() > 0) {
+            return response()->json(['status' => 200, 'data' => $records], 200);
         } else {
             return response()->json(['status' => 400 , 'message' => __('messages.no_data')], 200);
         }
